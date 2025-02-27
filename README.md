@@ -30,19 +30,22 @@ ssh user@web-vm1.fra1.web(192.168.0.4)
 sudo systemctl restart ntp
 ntpq -p
 ```
+
+# Docker/Kubernetes
+
 ### docker-compose for a nginx server.
 
 ```
 docker-compose up -d
-
 ```
+
 ### Which Kubernetes command you will use to identify the reason for a pod restart in the project "internal" under namespace "production".
 
-# identify the reason for a pod restart in the project.
+### identify the reason for a pod restart in the project.
 ```
 kubectl logs -f <pod-name> -n production --previous
 ```
-# For debugging use more command
+### For debugging use more command
 
 ```
 kubectl get pods -n production -l project=internal
