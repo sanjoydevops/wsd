@@ -30,3 +30,11 @@ ssh user@web-vm1.fra1.web(192.168.0.4)
 sudo systemctl restart ntp
 ntpq -p
 ```
+### docker-compose for a nginx server.
+
+```
+docker-compose up -d
+
+```
+
+
