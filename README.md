@@ -36,5 +36,16 @@ ntpq -p
 docker-compose up -d
 
 ```
+### Which Kubernetes command you will use to identify the reason for a pod restart in the project "internal" under namespace "production".
 
+# identify the reason for a pod restart in the project.
+```
+kubectl logs -f <pod-name> -n production --previous
+```
+# For debugging use more command
 
+```
+kubectl get pods -n production -l project=internal
+kubectl describe pod <pod-name> -n production
+kubectl logs <pod-name> -c <container-name>-n production
+```
