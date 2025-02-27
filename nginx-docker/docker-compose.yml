@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Optional: Custom NGINX configuration if needed
+    networks:
+      nginx_network:
+        ipv4_address: 172.20.8.10  # You can set a static IP if needed
+    restart: always
+
+networks:
+  nginx_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.8.0/24
+
+volumes:
+  nginx_logs:
+    driver: local
+
