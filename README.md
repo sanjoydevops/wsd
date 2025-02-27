@@ -13,4 +13,5 @@ For a single server
 */10 2,3,4 * * * /usr/sbin/logrotate /etc/logrotate.conf`
 
 For all server
+
 `ansible-playbook -i ~/wsd/ansible/inventory.yml ~/wsd/ansible/logrotate_cron.yml --ask-become-pass`
