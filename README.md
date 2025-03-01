@@ -100,6 +100,14 @@ Describe the pod and look for probe failures
 If probes are failing:
 Increase initialDelaySeconds in the probe settings. Ensure the probe endpoint is responding correctly.
 
+# Metrics 
+
+Prometheus work
+
+```
+Prometheus is designed for efficient monitoring, with core components working together in four main steps: data collection, storage, querying, and alerting.How Prometheus collects metrics: It pulls data from applications, databases, Linux hosts, and containers, stores them in its time-series database (TSDB), and serves data via an HTTP server. For example, the Node Exporter collects system metrics like CPU, memory, and disk usage. The JMX Exporter exposes Java application metrics via the JMX interface, while the StatsD Exporter bridges StatsD metrics such as counters and timers to Prometheus. This modular setup allows Prometheus to collect diverse application and system data for comprehensive monitoring.
+```
+
 
   
 
