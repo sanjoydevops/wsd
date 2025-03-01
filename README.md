@@ -108,6 +108,32 @@ Prometheus work
 Prometheus is designed for efficient monitoring, with core components working together in four main steps: data collection, storage, querying, and alerting.How Prometheus collects metrics: It pulls data from applications, databases, Linux hosts, and containers, stores them in its time-series database (TSDB), and serves data via an HTTP server. For example, the Node Exporter collects system metrics like CPU, memory, and disk usage. The JMX Exporter exposes Java application metrics via the JMX interface, while the StatsD Exporter bridges StatsD metrics such as counters and timers to Prometheus. This modular setup allows Prometheus to collect diverse application and system data for comprehensive monitoring.
 ```
 
+### How do you create custom Prometheus alerts and alerting rules for Kubernetes monitoring? Provide an example alert rule and its configuration.
+
+To create custom Prometheus alerts and alerting rules for Kubernetes monitoring need to define PrometheusRule CRD in Prometheus Operator.
+Prometheus deployment
+Alertmanager deployment
+Prometheus Alert Rules
+Service discovery for Kubernetes metrics
+Alert routing to Slack, Email, etc.
+
+High CPU Usage Alert Rule
+
+```kubectl apply -f high-cpu-alert.yaml```
+
+ServiceMonitor for Kubernetes Metrics
+
+```kubectl apply -f servicemonitor.yaml```
+
+AlertmanagerConfig for Slack Notification
+
+``` 
+kubectl create secret generic slack-webhook --from-literal=webhook='https://hooks.slack.com/services/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sz4Qk' -n monitoring
+kubectl apply -f alertmanager-slack.yaml
+kubectl get prometheusrules -n monitoring
+```
+
+
 
   
 
