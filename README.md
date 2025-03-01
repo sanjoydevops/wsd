@@ -133,6 +133,12 @@ kubectl apply -f alertmanager-slack.yaml
 kubectl get prometheusrules -n monitoring
 ```
 
+### What is the Prometheus query you can use in Granfana to properly show usage trend of an application metric that is a counter?
+
+I use the rate() function to properly show the usage trend over time.
+
+```rate(application_metric_total[5m])```
+
 
 
   
