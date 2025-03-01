@@ -143,6 +143,38 @@ or, Real-Time Monitoring
 
 ```irate(application_metric_total[1m])```
 
+### Query to db cluster returns different result each time.  Users reported query result has data records that they deleted days ago Explain what the likely reason for the behavior and how to avoid it.
+
+
+Likely Reason for the Behavior: This issue is likely caused by eventual consistency and stale data due to tombstones in Cassandra.
+
+1. Eventual Consistency & Read Repair
+Cassandra is a distributed database that follows eventual consistency. If the consistency level of the read query is low (e.g., ONE), the query might be served from a node that has outdated data. The data might not be fully replicated across all nodes, leading to inconsistent results.
+
+2. Deleted Records Still Appearing (Tombstones Issue)
+In Cassandra, when a record is deleted, it is not immediately removed. Instead, a tombstone (marker for deletion) is created. If some nodes haven't fully processed the tombstone due to compaction delays, the deleted data may still appear in query results.
+
+3. Replica Synchronization Delay
+If the deleted data was stored on multiple replicas but the deletion operation did not propagate correctly, queries may return outdated results from a node that still holds the old data.
+
+How to Avoid This Issue: 
+login
+```
+cqlsh 192.168.1.105 9042 -u cass -p 'cass@123'
+
+Use a higher consistency level (QUORUM or ALL) when reading data
+SELECT * FROM notification_ms WHERE id = '2239' CONSISTENCY QUORUM;
+
+If data inconsistency persists, trigger read repair by running
+SELECT * FROM notification_ms WHERE id = '2239' CONSISTENCY ALL;
+
+Manually Trigger Compaction, To remove tombstones faster, run compaction:
+nodetool compact keyspace_name notification_ms
+
+Check and Tune Tombstone Settings, Reduce the tombstone_gc_grace_seconds (default is 10 days) to clear deleted data faster:
+ALTER TABLE notification_ms WITH gc_grace_seconds = 86400;  -- 1 day
+```
+
 
 
 
