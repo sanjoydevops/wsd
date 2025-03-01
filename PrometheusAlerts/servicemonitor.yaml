@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubernetes-services
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      k8s-app: kubelet
+  endpoints:
+    - port: metrics
+      interval: 30s
