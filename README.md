@@ -175,6 +175,27 @@ Check and Tune Tombstone Settings, Reduce the tombstone_gc_grace_seconds (defaul
 ALTER TABLE notification_ms WITH gc_grace_seconds = 86400;  -- 1 day
 ```
 
+### Shard the collection sanfrancisco.company_name based on _id.
+
+Enable sharding for the sanfrancisco database: ```sh.enableSharding("sanfrancisco")```
+
+we want to shard based on _id, we need to choose a shard key. _id is a good choice because it's indexed by default and ensures even distribution. ```sh.shardCollection("sanfrancisco.company_name", { "_id": "hashed" })```
+
+Connect to the mongos router. Add the new shard (replicaset_2): ```sh.addShard("replicaset_2/mongod_host2:27017")```
+
+
+After sharding, check the status using: ```sh.status()```
+
+MongoDB automatically balances data between shards. To check the balancer status: ```sh.getBalancerState()```
+
+or, can trigger a manual migration:
+
+```sh.moveChunk("sanfrancisco.company_name", { "_id": MinKey }, "replicaset_2")```
+
+
+After sharding, monitor query execution and overall performance using:
+```db.company_name.explain("executionStats").findOne()```
+
 
 
 
