@@ -139,6 +139,11 @@ I use the rate() function to properly show the usage trend over time.
 
 ```rate(application_metric_total[5m])```
 
+or, Real-Time Monitoring
+
+```irate(application_metric_total[1m])```
+
+
 
 
   
