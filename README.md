@@ -52,3 +52,57 @@ kubectl get pods -n production -l project=internal
 kubectl describe pod <pod-name> -n production
 kubectl logs <pod-name> -c <container-name>-n production
 ```
+
+### From a Kubernetes configuration perspective, there are a few possible reasons why your java-app pod is randomly restarting. 
+
+1. Memory Overcommitment (Out of Memory - OOMKill)
+Your pod's total memory consumption seems very close to the configured limits:
+
+```
+Total Memory Usage 
+java-app: 951Mi java-app-logrotate: 45Mi 
+java-app-fluentd: 84Mi 
+mongos: 62Mi 
+Total Used = 951 + 45 + 84 + 62 = 1142Mi
+Memory Limit = 1500Mi
+```
+Even though you have some buffer left, your Java process (java-app) has an -Xmx value of 1000M, meaning the JVM itself can allocate up to 1000Mi memory, which could lead to unexpected OOMKill (Out of Memory Kill) when additional memory is needed.
+
+Possible Fix:
+Reduce the -Xmx value to something like 900M to leave room for other processes. Increase the memory limit if possible.
+Check OOMKill logs:
+
+```kubectl get pod java-app-7d9d44ccbf-lmvbc -o yaml | grep -i oom```
+
+2. CPU Starvation
+
+```
+The total CPU requested is:
+java-app: 3m
+java-app-logrotate: 1m
+java-app-fluentd: 1m
+mongos: 4m
+Total Used = 9m
+```
+The limit is 2000m, so CPU is not a likely issue unless the application has a CPU-intensive operation that temporarily spikes usage and gets throttled.
+
+Possible Fix:
+Check CPU throttling using:
+
+```kubectl describe pod java-app-7d9d44ccbf-lmvbc | grep -i throttling```  (If CPU is throttled, increase the CPU request.)
+
+3. Liveness or Readiness Probe Failures
+
+Describe the pod and look for probe failures
+
+```kubectl describe pod java-app-7d9d44ccbf-lmvbc```
+
+If probes are failing:
+Increase initialDelaySeconds in the probe settings. Ensure the probe endpoint is responding correctly.
+
+
+  
+
+
+
+
